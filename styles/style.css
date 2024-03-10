@@ -1,0 +1,33 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+}
+
+.chess-row {
+    display: flex;
+}
+
+.chess-square {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100px;
+    height: 100px;
+}
+
+.light {
+    background-color: #ebecd0;
+}
+
+.dark {
+    background-color: #739552;
+}
+
+.chess-icon {
+    width: 90%;
+    height: auto;
+}
