@@ -1,4 +1,4 @@
-import { initialLayout } from "./const.js";
+import { initialLayout, validMoves } from "./const.js";
 
 let currentTurn = "W" // "W for white; B for black"
 
@@ -77,7 +77,7 @@ function allowDrop(ev) {
 
 /**
  * Stores the dragged piece position in dataTransfer (storage method for drag and drop API)
- * @param {*} ev 
+ * @param {Event} ev 
  */
 function drag(ev) {
     let piece = ev.target
@@ -104,10 +104,11 @@ function drop(ev) {
     let parentSquare = findSquare(parseInt(row), parseInt(col))
     let piece = parentSquare.firstChild
 
-    // Check if the piece being moved matches the current type
-    if (piece.dataset.color !== currentTurn) {
-        return;
-    }
+    let currentPos = [row, col]
+    let newPos = [ev.target.dataset.row, ev.target.dataset.col]
+
+    // Returns true if valid move, otherwise false
+    if (isValidMove(piece, currentPos, newPos)) { return }
 
     // Place it on the new chess square
     ev.target.appendChild(piece)
@@ -117,10 +118,28 @@ function drop(ev) {
 }
 
 /**
+ * Returns true if the move is valid; otherwise false. Valid moves are:
+ *  - Correct turn
+ *  - In possible moveset
+ *  - Inbounds
+ * @param {Node} piece
+ * @param {[Int, Int]} currentPos
+ * @param {[Int, Int]} newPos
+ * @returns {Boolean} 
+ */
+function isValidMove(piece, currentPos, newPos) {
+    // Check if the piece being moved matches the current type
+    if (piece.dataset.color !== currentTurn) {
+        return false
+    }
+
+}
+
+/**
  * Returns the chess square DOM element given the row and col numbers
  * @param {Int} row 
  * @param {Int} col 
- * @returns Chess square DOM element
+ * @returns {Node} Chess square DOM element
 */
 function findSquare(row, col) {
     let squares = document.querySelectorAll(".chess-square");
