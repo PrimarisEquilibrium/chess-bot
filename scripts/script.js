@@ -1,5 +1,6 @@
 import { initialLayout } from "./const.js";
 
+// On page load generate the chess board and pieces
 document.addEventListener("DOMContentLoaded", () => {
     generateBoard()
     generatePieces()
@@ -26,6 +27,10 @@ function generateBoard() {
             chessSquare.dataset.row = i;
             chessSquare.dataset.col = j;
 
+            // Add drag and drop logic to each chess square
+            chessSquare.ondragover = allowDrop
+            chessSquare.ondrop = drop
+
             // Alternate colors
             currentColor = currentColor === "light" ? "dark" : "light"
             chessRow.appendChild(chessSquare)
@@ -38,13 +43,57 @@ function generateBoard() {
 }
 
 /**
+ * Allows data/elements to be dropped in other elements
+ * @param {Event} ev 
+ */
+function allowDrop(ev) {
+    ev.preventDefault()
+}
+
+/**
+ * Stores the dragged piece position in dataTransfer (storage method for drag and drop API)
+ * @param {*} ev 
+ */
+function drag(ev) {
+    // The parent of the dragged chess icon is the chess square
+    let parentPiece = ev.target.parentNode
+    let row = parentPiece.dataset.row
+    let col = parentPiece.dataset.col
+    
+    // Stores the position in a string where first digit is row and second digit is col
+    ev.dataTransfer.setData("pos", `${row}${col}`)
+} 
+
+/**
+ * When the dragged data is dropped, the chess piece element is moved to the according square
+ * @param {Event} ev 
+ */
+function drop(ev) {
+    // Prevent default behavior of open as link on drop
+    ev.preventDefault()
+
+    // Get the piece that was dragged
+    let [row, col] = ev.dataTransfer.getData("pos").split("")
+    let parentSquare = findSquare(parseInt(row), parseInt(col))
+    let piece = parentSquare.firstChild
+
+    // Place it on the new chess square
+    ev.target.appendChild(piece)
+}
+
+/**
  * Modifies the current chessboard and adds the starting layout
 */
 function generatePieces() {
     for (let piece of initialLayout) {
         let [row, col, rank, color] = piece
         let square = findSquare(row, col)
+
+        square.dataset.piece = rank
+
         let pieceImage = document.createElement("img")
+        pieceImage.draggable = true
+        pieceImage.ondragstart = drag
 
         // Uses rank and color shortnames to quickly access images
         pieceImage.src = `./images/${color}${rank}.svg`
