@@ -1,5 +1,7 @@
 import { initialLayout } from "./const.js";
 
+let currentTurn = "W" // "W for white; B for black"
+
 // On page load generate the chess board and pieces
 document.addEventListener("DOMContentLoaded", () => {
     generateBoard()
@@ -43,6 +45,29 @@ function generateBoard() {
 }
 
 /**
+ * Modifies the current chessboard and adds the starting layout
+*/
+function generatePieces() {
+    for (let piece of initialLayout) {
+        let [row, col, rank, color] = piece
+        let square = findSquare(row, col)
+
+        let pieceImage = document.createElement("img")
+
+        pieceImage.dataset.piece = rank
+        pieceImage.dataset.color = color
+
+        pieceImage.draggable = true
+        pieceImage.ondragstart = drag
+
+        // Uses rank and color shortnames to quickly access images
+        pieceImage.src = `./images/${color}${rank}.svg`
+        pieceImage.classList.add("chess-icon")
+        square.appendChild(pieceImage)
+    }
+}
+
+/**
  * Allows data/elements to be dropped in other elements
  * @param {Event} ev 
  */
@@ -55,8 +80,10 @@ function allowDrop(ev) {
  * @param {*} ev 
  */
 function drag(ev) {
+    let piece = ev.target
+
     // The parent of the dragged chess icon is the chess square
-    let parentPiece = ev.target.parentNode
+    let parentPiece = piece.parentNode
     let row = parentPiece.dataset.row
     let col = parentPiece.dataset.col
     
@@ -77,29 +104,16 @@ function drop(ev) {
     let parentSquare = findSquare(parseInt(row), parseInt(col))
     let piece = parentSquare.firstChild
 
+    // Check if the piece being moved matches the current type
+    if (piece.dataset.color !== currentTurn) {
+        return;
+    }
+
     // Place it on the new chess square
     ev.target.appendChild(piece)
-}
 
-/**
- * Modifies the current chessboard and adds the starting layout
-*/
-function generatePieces() {
-    for (let piece of initialLayout) {
-        let [row, col, rank, color] = piece
-        let square = findSquare(row, col)
-
-        square.dataset.piece = rank
-
-        let pieceImage = document.createElement("img")
-        pieceImage.draggable = true
-        pieceImage.ondragstart = drag
-
-        // Uses rank and color shortnames to quickly access images
-        pieceImage.src = `./images/${color}${rank}.svg`
-        pieceImage.classList.add("chess-icon")
-        square.appendChild(pieceImage)
-    }
+    // Switch turns
+    currentTurn = currentTurn === "W" ? "B" : "W";
 }
 
 /**
