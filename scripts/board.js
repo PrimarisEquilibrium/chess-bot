@@ -1,4 +1,5 @@
-import { initialLayout, validMoves } from "./const.js";
+import { initialLayout } from "./const.js"
+import { findSquare } from "./utils.js"
 
 let currentTurn = "W" // "W for white; B for black"
 
@@ -54,7 +55,7 @@ function generatePieces() {
 
         let pieceImage = document.createElement("img")
 
-        pieceImage.dataset.piece = rank
+        pieceImage.dataset.rank = rank
         pieceImage.dataset.color = color
 
         pieceImage.draggable = true
@@ -104,11 +105,15 @@ function drop(ev) {
     let parentSquare = findSquare(parseInt(row), parseInt(col))
     let piece = parentSquare.firstChild
 
-    let currentPos = [row, col]
-    let newPos = [ev.target.dataset.row, ev.target.dataset.col]
+    // Get original piece position and new position
+    let currentPos = [parseInt(row), parseInt(col)]
+    let newPos = [
+        parseInt(ev.target.dataset.row), 
+        parseInt(ev.target.dataset.col)
+    ]
 
     // Returns true if valid move, otherwise false
-    if (isValidMove(piece, currentPos, newPos)) { return }
+    if (!isValidMove(piece, currentPos, newPos)) { return }
 
     // Place it on the new chess square
     ev.target.appendChild(piece)
@@ -133,21 +138,6 @@ function isValidMove(piece, currentPos, newPos) {
         return false
     }
 
-}
+    return true
 
-/**
- * Returns the chess square DOM element given the row and col numbers
- * @param {Int} row 
- * @param {Int} col 
- * @returns {Node} Chess square DOM element
-*/
-function findSquare(row, col) {
-    let squares = document.querySelectorAll(".chess-square");
-    for (let i = 0; i < squares.length; i++) {
-        let square = squares[i]
-        if (parseInt(square.dataset.row) === row && parseInt(square.dataset.col) === col) {
-            return square
-        }
-    }
-    return null
 }
