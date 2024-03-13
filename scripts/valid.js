@@ -83,6 +83,7 @@ function getValidPosFromDir(piece, pos, direction) {
         result.push([row, col])
     }
 
+    console.log(result)
     return result
 }
 
@@ -104,6 +105,7 @@ function validPawnMoves(piece) {
  * @param {Node} piece 
  * @returns {Array}
  */
+let prev = []
 function validBishopMoves(piece) {
     let newPos = getNewPos(piece.parentNode)
     let directions = [[-1, -1], [-1, 1], [1, -1], [1, 1]]
@@ -113,6 +115,11 @@ function validBishopMoves(piece) {
     directions.forEach(direction => {
         result = result.concat(getValidPosFromDir(piece, newPos, direction))
     })
+
+    prev.forEach(res => findSquare(res[0], res[1]).style.opacity = 1)
+    result.forEach(res => findSquare(res[0], res[1]).style.opacity = 0.5)
+    prev = result
+
     return result
 }
 
@@ -121,6 +128,7 @@ function validBishopMoves(piece) {
  * @param {Node} piece 
  * @returns {Array}
  */
+let prev2 = []
 function validRookMoves(piece) {
     let newPos = getNewPos(piece.parentNode)
     let directions = [[0, -1], [-1, 0], [0, 1], [1, 0]]
@@ -128,6 +136,11 @@ function validRookMoves(piece) {
     directions.forEach(direction => {
         result = result.concat(getValidPosFromDir(piece, newPos, direction))
     })
+
+    prev2.forEach(res => findSquare(res[0], res[1]).style.opacity = 1)
+    result.forEach(res => findSquare(res[0], res[1]).style.opacity = 0.5)
+    prev2 = result
+
     return result
 }
 
@@ -136,6 +149,7 @@ function validRookMoves(piece) {
  * @param {Node} piece 
  * @returns {Array}
  */
+let prev3 = []
 function validQueenMoves(piece) {
     let newPos = getNewPos(piece.parentNode)
     let directions = [
@@ -146,5 +160,10 @@ function validQueenMoves(piece) {
     directions.forEach(direction => {
         result = result.concat(getValidPosFromDir(piece, newPos, direction))
     })
+
+    prev3.forEach(res => findSquare(res[0], res[1]).style.opacity = 1)
+    result.forEach(res => findSquare(res[0], res[1]).style.opacity = 0.5)
+    prev3 = result
+
     return result
 }

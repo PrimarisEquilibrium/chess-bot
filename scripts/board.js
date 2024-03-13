@@ -29,7 +29,7 @@ function generateBoard() {
             chessSquare.classList.add(currentColor)
 
             // Add dataset attributes for row and column properties
-            chessSquare.dataset.row = i;
+            chessSquare.dataset.row = Math.abs(i - 7);
             chessSquare.dataset.col = j;
 
             // Add drag and drop logic to each chess square
