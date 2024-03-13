@@ -8,10 +8,13 @@ import { findSquare } from "./utils.js"
 export function getPossibleMoves(piece) {
     switch (piece.dataset.rank) {
         case "P":
-            validPawnMove(piece)
+            validPawnMoves(piece)
             break
         case "B":
-            console.log(validBishopMove(piece))
+            console.log(validBishopMoves(piece))
+            break
+        case "R":
+            console.log(validRookMoves(piece))
             break
     }
 }
@@ -54,47 +57,70 @@ function inBounds(x, y) {
 function getValidPosFromDir(piece, pos, direction) {
     // Variable setup
     let result = []
-    let [newX, newY] = pos
-    let [deltaX, deltaY] = direction
+    let [row, col] = pos
+    let [deltaRow, deltaCol] = direction
     let capture = false
 
-    while (inBounds(newX + deltaX, newY + deltaY)) {
+    while (inBounds(row + deltaRow, col + deltaCol)) {
         // If an opponent piece has already been captured, break
         if (capture) { break }
 
         // Update the values of the pointers 
-        newX += deltaX
-        newY += deltaY
+        row += deltaRow
+        col += deltaCol
 
         // Conditions for when captures occur
-        let hasPiece = findSquare(newX, newY).firstChild
+        let hasPiece = findSquare(row, col).firstChild
         if (hasPiece && piece.dataset.color === hasPiece.dataset.color) { 
             break
         } else if (hasPiece) {
             capture = true
         }
 
-        result.push([newX, newY])
+        result.push([row, col])
     }
 
     return result
 }
 
-function validPawnMove(piece) {
+function validPawnMoves(piece) {
 
 }
+
+// MOVE TEST
+/*
+    let prev = [] (GLOBAL)
+    prev.forEach(res => findSquare(res[0], res[1]).style.opacity = 1)
+    result.forEach(res => findSquare(res[0], res[1]).style.opacity = 0.5)
+    prev = result
+*/
 
 /**
  * Returns all valid bishop moves
  * @param {Node} piece 
- * @returns {Boolean}
+ * @returns {Array}
  */
-function validBishopMove(piece) {
+function validBishopMoves(piece) {
     let newPos = getNewPos(piece.parentNode)
     let directions = [[-1, -1], [-1, 1], [1, -1], [1, 1]]
     let result = []
 
     // For each direction get all valid positions
+    directions.forEach(direction => {
+        result = result.concat(getValidPosFromDir(piece, newPos, direction))
+    })
+    return result
+}
+
+/**
+ * Returns all valid rook moves
+ * @param {Node} piece 
+ * @returns {Array}
+ */
+function validRookMoves(piece) {
+    let newPos = getNewPos(piece.parentNode)
+    let directions = [[0, -1], [-1, 0], [0, 1], [1, 0]]
+    let result = []
     directions.forEach(direction => {
         result = result.concat(getValidPosFromDir(piece, newPos, direction))
     })
