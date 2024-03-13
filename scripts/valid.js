@@ -8,7 +8,7 @@ import { findSquare } from "./utils.js"
 export function getPossibleMoves(piece) {
     switch (piece.dataset.rank) {
         case "P":
-            validPawnMoves(piece)
+            console.log(validPawnMoves(piece))
             break
         case "B":
             validBishopMoves(piece)
@@ -27,7 +27,7 @@ export function getPossibleMoves(piece) {
  * @param {Node} square 
  * @returns {Array}
  */
-function getNewPos(square) {
+function getPos(square) {
     // Convert to int as datasets are strings
     return [
         parseInt(square.dataset.row),
@@ -87,10 +87,6 @@ function getValidPosFromDir(piece, pos, direction) {
     return result
 }
 
-function validPawnMoves(piece) {
-
-}
-
 // MOVE TEST
 /*
 (GLOBAL)
@@ -100,14 +96,73 @@ function validPawnMoves(piece) {
     prev = result
 */
 
+const ENABLE_MOVE_HIGHLIGHTS = true
+
+/**
+ * Returns all valid pawn moves
+ * @param {Node} piece 
+ * @returns {Array}
+ */
+let prevP = []
+function validPawnMoves(piece) {
+    let result = []
+    function checkAndPush(rowOffset, colOffset) {
+        let adjSquare = findSquare(row + rowOffset, col + colOffset)
+        if (adjSquare.firstChild) {
+            result.push([row + rowOffset, col + colOffset])
+        }
+    }
+
+    let [row, col] = getPos(piece.parentNode)
+    let hasMoved = piece.dataset.notMoved === "true" ? true : false
+    
+    if (piece.dataset.color === "W") {
+        // Diagonal capture case
+        checkAndPush(1, -1)
+        checkAndPush(1, 1)
+        // Prevent moving forward to square ahead if it's occupied
+        if (findSquare(row + 1, col).firstChild) {} 
+        else {
+            // If its the pawns first move, they are able to move two squares ahead
+            if (hasMoved) {
+                result.push([row + 2, col])
+            }
+            result.push([row + 1, col])
+        }
+    } else {
+        checkAndPush(-1, 1)
+        checkAndPush(-1, -1)
+        // Inverse case for black
+        if (findSquare(row - 1, col).firstChild) {} 
+        else {
+            if (hasMoved) {
+                result.push([row - 2, col])
+            }
+            result.push([row - 1, col])
+        }
+    }
+
+    if (hasMoved) {
+        piece.dataset.notMoved = false
+    }
+
+    if (ENABLE_MOVE_HIGHLIGHTS) {
+        prevP.forEach(res => findSquare(res[0], res[1]).style.opacity = 1)
+        result.forEach(res => findSquare(res[0], res[1]).style.opacity = 0.5)
+        prevP = result
+    }
+
+    return result
+}
+
 /**
  * Returns all valid bishop moves
  * @param {Node} piece 
  * @returns {Array}
  */
-let prev = []
+let prevB = []
 function validBishopMoves(piece) {
-    let newPos = getNewPos(piece.parentNode)
+    let newPos = getPos(piece.parentNode)
     let directions = [[-1, -1], [-1, 1], [1, -1], [1, 1]]
     let result = []
 
@@ -116,9 +171,11 @@ function validBishopMoves(piece) {
         result = result.concat(getValidPosFromDir(piece, newPos, direction))
     })
 
-    prev.forEach(res => findSquare(res[0], res[1]).style.opacity = 1)
-    result.forEach(res => findSquare(res[0], res[1]).style.opacity = 0.5)
-    prev = result
+    if (ENABLE_MOVE_HIGHLIGHTS) {
+        prevB.forEach(res => findSquare(res[0], res[1]).style.opacity = 1)
+        result.forEach(res => findSquare(res[0], res[1]).style.opacity = 0.5)
+        prevB = result
+    }
 
     return result
 }
@@ -128,18 +185,20 @@ function validBishopMoves(piece) {
  * @param {Node} piece 
  * @returns {Array}
  */
-let prev2 = []
+let prevR = []
 function validRookMoves(piece) {
-    let newPos = getNewPos(piece.parentNode)
+    let newPos = getPos(piece.parentNode)
     let directions = [[0, -1], [-1, 0], [0, 1], [1, 0]]
     let result = []
     directions.forEach(direction => {
         result = result.concat(getValidPosFromDir(piece, newPos, direction))
     })
 
-    prev2.forEach(res => findSquare(res[0], res[1]).style.opacity = 1)
-    result.forEach(res => findSquare(res[0], res[1]).style.opacity = 0.5)
-    prev2 = result
+    if (ENABLE_MOVE_HIGHLIGHTS) {
+        prevR.forEach(res => findSquare(res[0], res[1]).style.opacity = 1)
+        result.forEach(res => findSquare(res[0], res[1]).style.opacity = 0.5)
+        prevR = result
+    }
 
     return result
 }
@@ -149,9 +208,9 @@ function validRookMoves(piece) {
  * @param {Node} piece 
  * @returns {Array}
  */
-let prev3 = []
+let prevQ = []
 function validQueenMoves(piece) {
-    let newPos = getNewPos(piece.parentNode)
+    let newPos = getPos(piece.parentNode)
     let directions = [
         [-1, -1], [-1, 1], [1, -1], [1, 1],
         [0, -1], [-1, 0], [0, 1], [1, 0]
@@ -161,9 +220,11 @@ function validQueenMoves(piece) {
         result = result.concat(getValidPosFromDir(piece, newPos, direction))
     })
 
-    prev3.forEach(res => findSquare(res[0], res[1]).style.opacity = 1)
-    result.forEach(res => findSquare(res[0], res[1]).style.opacity = 0.5)
-    prev3 = result
+    if (ENABLE_MOVE_HIGHLIGHTS) {
+        prevQ.forEach(res => findSquare(res[0], res[1]).style.opacity = 1)
+        result.forEach(res => findSquare(res[0], res[1]).style.opacity = 0.5)
+        prevQ = result
+    }
 
     return result
 }
