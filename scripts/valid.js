@@ -11,10 +11,13 @@ export function getPossibleMoves(piece) {
             validPawnMoves(piece)
             break
         case "B":
-            console.log(validBishopMoves(piece))
+            validBishopMoves(piece)
             break
         case "R":
-            console.log(validRookMoves(piece))
+            validRookMoves(piece)
+            break
+        case "Q":
+            validQueenMoves(piece)
             break
     }
 }
@@ -89,7 +92,8 @@ function validPawnMoves(piece) {
 
 // MOVE TEST
 /*
-    let prev = [] (GLOBAL)
+(GLOBAL)
+    let prev = []
     prev.forEach(res => findSquare(res[0], res[1]).style.opacity = 1)
     result.forEach(res => findSquare(res[0], res[1]).style.opacity = 0.5)
     prev = result
@@ -120,6 +124,24 @@ function validBishopMoves(piece) {
 function validRookMoves(piece) {
     let newPos = getNewPos(piece.parentNode)
     let directions = [[0, -1], [-1, 0], [0, 1], [1, 0]]
+    let result = []
+    directions.forEach(direction => {
+        result = result.concat(getValidPosFromDir(piece, newPos, direction))
+    })
+    return result
+}
+
+/**
+ * Returns all valid queen moves
+ * @param {Node} piece 
+ * @returns {Array}
+ */
+function validQueenMoves(piece) {
+    let newPos = getNewPos(piece.parentNode)
+    let directions = [
+        [-1, -1], [-1, 1], [1, -1], [1, 1],
+        [0, -1], [-1, 0], [0, 1], [1, 0]
+    ]
     let result = []
     directions.forEach(direction => {
         result = result.concat(getValidPosFromDir(piece, newPos, direction))
