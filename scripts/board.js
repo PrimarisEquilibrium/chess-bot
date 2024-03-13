@@ -1,6 +1,6 @@
 import { initialLayout } from "./const.js"
 import { findSquare } from "./utils.js"
-import { validPawnMove, validRookMove } from "./valid.js"
+import { getPossibleMoves } from "./valid.js"
 
 let currentTurn = "W" // "W for white; B for black"
 
@@ -11,7 +11,8 @@ document.addEventListener("DOMContentLoaded", () => {
 })
 
 /**
- * Creates a chess board DOM element and appends it to the chess-container 
+ * Creates a chess board DOM element and appends it to the chess-container
+ * @returns {void}
  */
 function generateBoard() {
     let chessContainer = document.getElementById("chess-container")
@@ -48,6 +49,7 @@ function generateBoard() {
 
 /**
  * Modifies the current chessboard and adds the starting layout
+ * @returns {void}
  */
 function generatePieces() {
     for (let piece of initialLayout) {
@@ -58,6 +60,11 @@ function generatePieces() {
 
         pieceImage.dataset.rank = rank
         pieceImage.dataset.color = color
+
+        // Allows for the pawn to move 2 squares on its first turn
+        if (rank == "P") {
+            pieceImage.dataset.notMoved = true
+        }
 
         pieceImage.draggable = true
         pieceImage.ondragstart = drag
@@ -72,6 +79,7 @@ function generatePieces() {
 /**
  * Allows data/elements to be dropped in other elements
  * @param {Event} ev 
+ * @returns {void}
  */
 function allowDrop(ev) {
     ev.preventDefault()
@@ -79,7 +87,8 @@ function allowDrop(ev) {
 
 /**
  * Stores the dragged piece position in dataTransfer (storage method for drag and drop API)
- * @param {Event} ev 
+ * @param {Event} ev
+ * @returns {void}
  */
 function drag(ev) {
     // The parent of the dragged chess icon is the chess square
@@ -97,19 +106,13 @@ function drag(ev) {
  *  - In possible moveset
  *  - Inbounds
  * @param {Node} piece
- * @param {[Int, Int]} currentPos
- * @param {[Int, Int]} newPos
+ * @param {Node} droppedSquare
+ * @param {Array} currentPos
  * @returns {Boolean} 
  */
-function isValidMove(piece, currentPos, newPos) {
+function isValidMove(piece, droppedSquare, currentPos) {
     // Check if the piece being moved matches the current type
     if (piece.dataset.color !== currentTurn) { return false }
-
-    if (piece.dataset.rank === "P") {
-        if (!validPawnMove(piece, currentPos, newPos)) { return false }
-    } else if (piece.dataset.rank === "R") {
-        if (!validRookMove(currentPos, newPos)) { return false }
-    }
 
     return true
 
@@ -125,15 +128,13 @@ function getDraggedPiece(ev) {
     let [row, col] = ev.dataTransfer.getData("pos").split("")
     let square = findSquare(parseInt(row), parseInt(col))
     let piece = square.firstChild
-
-    // Get original piece position and new position
-    let currentPos = [parseInt(row), parseInt(col)]
-    return [piece, currentPos]
+    return piece
 }
 
 /**
  * When the dragged data is dropped, the chess piece element is moved to the according square
- * @param {Event} ev 
+ * @param {Event} ev
+ * @returns {void}
  */
 function drop(ev) {
     // Prevent default behavior of open as link on drop
@@ -148,15 +149,11 @@ function drop(ev) {
         square = ev.target.parentNode
     }
 
-    // Get the piece and position that was dragged
-    let [piece, currentPos] = getDraggedPiece(ev)
-    let newPos = [
-        parseInt(square.dataset.row), 
-        parseInt(square.dataset.col)
-    ]
+    // Get the piece that was dragged
+    let piece = getDraggedPiece(ev)
 
     // Returns true if valid move, otherwise false
-    if (!isValidMove(piece, currentPos, newPos)) { return }
+    getPossibleMoves(piece)
 
     // If there is a piece on the position, capture it
     let opponentPiece = square.firstChild
