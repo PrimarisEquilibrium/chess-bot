@@ -8,7 +8,7 @@ import { findSquare } from "./utils.js"
 export function getPossibleMoves(piece) {
     switch (piece.dataset.rank) {
         case "P":
-            console.log(validPawnMoves(piece))
+            validPawnMoves(piece)
             break
         case "B":
             validBishopMoves(piece)
@@ -19,6 +19,11 @@ export function getPossibleMoves(piece) {
         case "Q":
             validQueenMoves(piece)
             break
+        case "K":
+            validKingMoves(piece)
+            break
+        case "N":
+            validKnightMoves(piece)
     }
 }
 
@@ -156,6 +161,43 @@ function validPawnMoves(piece) {
 }
 
 /**
+ * Returns all valid king moves
+ * @param {Node} piece 
+ * @returns {Array}
+ */
+let prevK = []
+function validKingMoves(piece) {
+    let result = []
+    let [row, col] = getPos(piece.parentNode)
+    function checkAndPush(rowOffset, colOffset) {
+        let [newRow, newCol] = [row + rowOffset, col + colOffset]
+        if (inBounds(newRow, newCol)) {
+            let adjSquare = findSquare(newRow, newCol)
+            if (
+                !adjSquare.firstChild ||
+                adjSquare.firstChild.dataset.color !== piece.dataset.color
+            ) {
+                result.push([newRow, newCol])
+            }
+        }
+    }
+
+    let directions = [
+        [-1, -1], [-1, 1], [1, -1], [1, 1],
+        [0, -1], [-1, 0], [0, 1], [1, 0]
+    ]
+    directions.forEach(dir => checkAndPush(...dir))
+
+    if (ENABLE_MOVE_HIGHLIGHTS) {
+        prevK.forEach(res => findSquare(res[0], res[1]).style.opacity = 1)
+        result.forEach(res => findSquare(res[0], res[1]).style.opacity = 0.5)
+        prevK = result
+    }
+
+    return result
+}
+
+/**
  * Returns all valid bishop moves
  * @param {Node} piece 
  * @returns {Array}
@@ -175,6 +217,43 @@ function validBishopMoves(piece) {
         prevB.forEach(res => findSquare(res[0], res[1]).style.opacity = 1)
         result.forEach(res => findSquare(res[0], res[1]).style.opacity = 0.5)
         prevB = result
+    }
+
+    return result
+}
+
+/**
+ * Returns all valid knight moves
+ * @param {Node} piece 
+ * @returns {Array}
+ */
+let prevN = []
+function validKnightMoves(piece) {
+    let result = []
+    let [row, col] = getPos(piece.parentNode)
+    function checkAndPush(rowOffset, colOffset) {
+        let [newRow, newCol] = [row + rowOffset, col + colOffset]
+        if (inBounds(newRow, newCol)) {
+            let adjSquare = findSquare(newRow, newCol)
+            if (
+                !adjSquare.firstChild ||
+                adjSquare.firstChild.dataset.color !== piece.dataset.color
+            ) {
+                result.push([newRow, newCol])
+            }
+        }
+    }
+
+    let directions = [
+        [2, 1], [2, -1], [-2, 1], [-2, -1], 
+        [1, 2], [1, -2], [-1, 2], [-1, -2]
+    ]
+    directions.forEach(dir => checkAndPush(...dir))
+
+    if (ENABLE_MOVE_HIGHLIGHTS) {
+        prevN.forEach(res => findSquare(res[0], res[1]).style.opacity = 1)
+        result.forEach(res => findSquare(res[0], res[1]).style.opacity = 0.5)
+        prevN = result
     }
 
     return result
