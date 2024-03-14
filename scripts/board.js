@@ -1,6 +1,6 @@
 import { initialLayout } from "./const.js"
 import { findSquare } from "./utils.js"
-import { getPossibleMoves } from "./valid.js"
+import { getPos, getPossibleMoves } from "./valid.js"
 
 let currentTurn = "W" // "W for white; B for black"
 
@@ -110,9 +110,41 @@ function drag(ev) {
  * @param {Array} currentPos
  * @returns {Boolean} 
  */
-function isValidMove(piece, droppedSquare, currentPos) {
+function isValidMove(piece, droppedSquare) {
+    function deepIncludes(array, searchElement) {
+        for (const element of searchElement) {
+            if (array.length !== element.length) { 
+                return false 
+            }
+
+            let same = true
+            for (let i = 0; i < element.length; i++) {
+                if (!(array[i] === element[i])) {
+                    same = false
+                }
+            }
+            if (same) {
+                return true
+            }
+        }
+
+        return false
+    }
+
     // Check if the piece being moved matches the current type
     if (piece.dataset.color !== currentTurn) { return false }
+
+    let pos = getPos(droppedSquare)
+    console.log(pos, getPossibleMoves(piece))
+    if (!deepIncludes(pos, getPossibleMoves(piece))) { return false }
+
+    let hasMoved = piece.dataset.notMoved === "true" ? true : false
+    console.log(hasMoved)
+    if (piece.dataset.rank === "P") {
+        if (hasMoved) {
+            piece.dataset.notMoved = false
+        }
+    }
 
     return true
 
@@ -153,7 +185,7 @@ function drop(ev) {
     let piece = getDraggedPiece(ev)
 
     // Returns true if valid move, otherwise false
-    getPossibleMoves(piece)
+    if (!isValidMove(piece, square)) { return }
 
     // If there is a piece on the position, capture it
     let opponentPiece = square.firstChild
