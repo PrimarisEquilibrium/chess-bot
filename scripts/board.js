@@ -12,7 +12,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
 /**
  * Creates a chess board DOM element and appends it to the chess-container
- * @returns {void}
  */
 function generateBoard() {
     let chessContainer = document.getElementById("chess-container")
@@ -49,7 +48,6 @@ function generateBoard() {
 
 /**
  * Modifies the current chessboard and adds the starting layout
- * @returns {void}
  */
 function generatePieces() {
     for (let piece of initialLayout) {
@@ -71,6 +69,7 @@ function generatePieces() {
 
         // Uses rank and color shortnames to quickly access images
         pieceImage.src = `./images/${color}${rank}.svg`
+
         pieceImage.classList.add("chess-icon")
         square.appendChild(pieceImage)
     }
@@ -79,26 +78,52 @@ function generatePieces() {
 /**
  * Allows data/elements to be dropped in other elements
  * @param {Event} ev 
- * @returns {void}
  */
 function allowDrop(ev) {
     ev.preventDefault()
 }
 
+let prevPieces = []
+/**
+ * Modifies the chess board to show all available moves for a given piece
+ * @param {Event} ev 
+ */
+function displayMoves(ev) {
+    let piece = ev.target
+    if (currentTurn === piece.dataset.color) {
+        let possibleMoves = getPossibleMoves(piece)
+        possibleMoves.forEach(
+            pos => findSquare(pos[0], pos[1]).classList.add("active-square")
+        )
+        prevPieces = possibleMoves
+    }
+}
+
+/**
+ * Clears all available moves for a given piece
+ */
+function clearMoves() {
+    prevPieces.forEach(
+        pos => findSquare(pos[0], pos[1]).classList.remove("active-square")
+    )
+}
+
 /**
  * Stores the dragged piece position in dataTransfer (storage method for drag and drop API)
  * @param {Event} ev
- * @returns {void}
  */
 function drag(ev) {
     // The parent of the dragged chess icon is the chess square
     let square = ev.target.parentNode
     let row = square.dataset.row
     let col = square.dataset.col
+
+    // Shows move guidance on drag of piece
+    displayMoves(ev)
     
     // Stores the position in a string where first digit is row and second digit is col
     ev.dataTransfer.setData("pos", `${row}${col}`)
-} 
+}
 
 /**
  * Returns true if the move is valid; otherwise false. Valid moves are:
@@ -166,11 +191,13 @@ function getDraggedPiece(ev) {
 /**
  * When the dragged data is dropped, the chess piece element is moved to the according square
  * @param {Event} ev
- * @returns {void}
  */
 function drop(ev) {
     // Prevent default behavior of open as link on drop
     ev.preventDefault()
+
+    // Clears piece move guidance
+    clearMoves()
 
     // Get the square element dropped onto
     let square = ev.target

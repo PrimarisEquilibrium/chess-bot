@@ -87,15 +87,6 @@ function getValidPosFromDir(piece, pos, direction) {
     return result
 }
 
-// MOVE TEST
-/*
-(GLOBAL)
-    let prev = []
-    prev.forEach(res => findSquare(res[0], res[1]).style.opacity = 1)
-    result.forEach(res => findSquare(res[0], res[1]).style.opacity = 0.5)
-    prev = result
-*/
-
 /**
  * Returns all valid pawn moves
  * @param {Node} piece 
