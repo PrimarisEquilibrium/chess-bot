@@ -115,12 +115,13 @@ function isValidMove(piece, droppedSquare) {
     // Check if the piece being moved matches the current type
     if (piece.dataset.color !== currentTurn) { return false }
 
+    // Determines if the piece the player moved is part of its possible move set
     let pos = getPos(droppedSquare)
     console.log(pos, getPossibleMoves(piece))
     if (!deepIncludes(pos, getPossibleMoves(piece))) { return false }
 
+    // If it is the pawn's first move, then it can move one or two squares
     let hasMoved = piece.dataset.notMoved === "true" ? true : false
-    console.log(hasMoved)
     if (piece.dataset.rank === "P") {
         if (hasMoved) {
             piece.dataset.notMoved = false
