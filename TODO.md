@@ -8,6 +8,7 @@
  - [] Stalemate
  - [] Chess Notation History
  - [] Add the AI
+ - [] Mobile support
 
 ### In Progress
 

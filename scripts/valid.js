@@ -1,4 +1,5 @@
-import { findSquare } from "./utils.js"
+import { findSquare, getPos, inBounds } from "./utils.js"
+
 
 /**
  * Returns a nested array containing all current valid moves for the given piece
@@ -22,28 +23,6 @@ export function getPossibleMoves(piece) {
     }
 }
 
-/**
- * Returns the row and column of the given square
- * @param {Node} square 
- * @returns {Array}
- */
-export function getPos(square) {
-    // Convert to int as datasets are strings
-    return [
-        parseInt(square.dataset.row),
-        parseInt(square.dataset.col)
-    ]
-}
-
-/**
- * Returns true if the position is within the chessboard
- * @param {Int} x col
- * @param {Int} y row
- * @returns {Boolean}
- */
-function inBounds(x, y) {
-    return x <= 7 && x >= 0 && y <= 7 && y >= 0
-}
 
 /**
  * For pieces that move an arbitrary amount in the given directions, returns
@@ -86,6 +65,7 @@ function getValidPosFromDir(piece, pos, direction) {
     console.log(result)
     return result
 }
+
 
 /**
  * Returns all valid pawn moves
@@ -140,6 +120,7 @@ function validPawnMoves(piece) {
     return result
 }
 
+
 /**
  * Returns all valid king moves
  * @param {Node} piece 
@@ -172,6 +153,7 @@ function validKingMoves(piece) {
     return result
 }
 
+
 /**
  * Returns all valid bishop moves
  * @param {Node} piece 
@@ -189,6 +171,7 @@ function validBishopMoves(piece) {
 
     return result
 }
+
 
 /**
  * Returns all valid knight moves
@@ -219,6 +202,7 @@ function validKnightMoves(piece) {
     return result
 }
 
+
 /**
  * Returns all valid rook moves
  * @param {Node} piece 
@@ -233,6 +217,7 @@ function validRookMoves(piece) {
     })
     return result
 }
+
 
 /**
  * Returns all valid queen moves

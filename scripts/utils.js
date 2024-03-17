@@ -14,3 +14,28 @@ export function findSquare(row, col) {
     }
     return null
 }
+
+
+/**
+ * Returns the row and column of the given square
+ * @param {Node} square 
+ * @returns {Array}
+ */
+export function getPos(square) {
+    // Convert to int as datasets are strings
+    return [
+        parseInt(square.dataset.row),
+        parseInt(square.dataset.col)
+    ]
+}
+
+
+/**
+ * Returns true if the position is within the chessboard
+ * @param {Int} x col
+ * @param {Int} y row
+ * @returns {Boolean}
+ */
+export function inBounds(x, y) {
+    return x <= 7 && x >= 0 && y <= 7 && y >= 0
+}

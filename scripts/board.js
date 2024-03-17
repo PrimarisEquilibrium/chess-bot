@@ -1,6 +1,7 @@
 import { initialLayout } from "./const.js"
-import { findSquare } from "./utils.js"
-import { getPos, getPossibleMoves } from "./valid.js"
+import { findSquare, getPos } from "./utils.js"
+import { getPossibleMoves } from "./valid.js"
+
 
 let currentTurn = "W" // "W for white; B for black"
 
@@ -9,6 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
     generateBoard()
     generatePieces()
 })
+
 
 /**
  * Creates a chess board DOM element and appends it to the chess-container
@@ -46,6 +48,7 @@ function generateBoard() {
     }
 }
 
+
 /**
  * Modifies the current chessboard and adds the starting layout
  */
@@ -75,6 +78,7 @@ function generatePieces() {
     }
 }
 
+
 /**
  * Allows data/elements to be dropped in other elements
  * @param {Event} ev 
@@ -99,6 +103,7 @@ function displayMoves(ev) {
     }
 }
 
+
 /**
  * Clears all available moves for a given piece
  */
@@ -107,6 +112,7 @@ function clearMoves() {
         pos => findSquare(pos[0], pos[1]).classList.remove("active-square")
     )
 }
+
 
 /**
  * Stores the dragged piece position in dataTransfer (storage method for drag and drop API)
@@ -124,6 +130,7 @@ function drag(ev) {
     // Stores the position in a string where first digit is row and second digit is col
     ev.dataTransfer.setData("pos", `${row}${col}`)
 }
+
 
 /**
  * Returns true if the move is valid; otherwise false. Valid moves are:
@@ -175,6 +182,7 @@ function isValidMove(piece, droppedSquare) {
 
 }
 
+
 /**
  * Retrieves the dragged chess piece and its position
  * @param {Event} ev
@@ -187,6 +195,7 @@ function getDraggedPiece(ev) {
     let piece = square.firstChild
     return piece
 }
+
 
 /**
  * When the dragged data is dropped, the chess piece element is moved to the according square
