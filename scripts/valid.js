@@ -25,6 +25,27 @@ export function getPossibleMoves(piece) {
 
 
 /**
+ * Returns true if the square is being attacked by any piece of the given color
+ * @param {Array} pos [row, col]
+ * @param {String} color "W" (White) or "B" (Black)
+ * @returns 
+ */
+function isPosAttacked(pos, color) {
+    return false
+}
+
+
+/**
+ * Returns true if the king (of the color provided) is in check
+ * @param {String} color "W" (White) or "B" (Black)
+ * @returns {Boolean}
+ */
+function isInCheck(color) {
+    return false
+}
+
+
+/**
  * For pieces that move an arbitrary amount in the given directions, returns
  * all coordinates in that continuous direction until the following conditions
  * are broken:
