@@ -12,8 +12,8 @@ const w = "W"
 
 // [row, col, rank, color]
 // Layout is: 
-//  - 0, 0 top left corner
-//  - 7, 7 wottom right corner
+//  - 0, 0 bottom right corner
+//  - 7, 7 top right corner
 export const initialLayout = [
     [0, 0, R, w], [0, 1, N, w], [0, 2, B, w], [0, 3, Q, w], [0, 4, K, w], [0, 5, B, w], [0, 6, N, w], [0, 7, R, w],
     [1, 0, P, w], [1, 1, P, w], [1, 2, P, w], [1, 3, P, w], [1, 4, P, w], [1, 5, P, w], [1, 6, P, w], [1, 7, P, w],
