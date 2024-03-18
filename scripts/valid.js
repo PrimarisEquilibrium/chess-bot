@@ -29,7 +29,7 @@ export function getPossibleMoves(piece) {
  * @param {String} color "W" (White) or "B" (Black)
  * @returns {Array} Nested array of DOM Nodes
  */
-function getAllPieces(color) {
+export function getAllPieces(color) {
     let enemyPieces = []
 
     // Iterate through all chess tiles
@@ -45,6 +45,7 @@ function getAllPieces(color) {
             }
         }
     }
+
     return enemyPieces
 }
 
@@ -55,7 +56,7 @@ function getAllPieces(color) {
  * @param {String} color "W" (White) or "B" (Black)
  * @returns 
  */
-function isPosAttacked(pos, color) {
+export function isPosAttacked(pos, color) {
     let enemyPieces = getAllPieces(color)
     let attackedPositions = []
 
@@ -65,10 +66,7 @@ function isPosAttacked(pos, color) {
     }
 
     // If the passed position is in the attack array, return true
-    if (deepIncludes(attackedPositions, pos)) {
-        return true
-    }
-    return false
+    return deepIncludes(pos, attackedPositions)
 }
 
 
@@ -77,8 +75,22 @@ function isPosAttacked(pos, color) {
  * @param {String} color "W" (White) or "B" (Black)
  * @returns {Boolean}
  */
-function isInCheck(color) {
-    return false
+export function isInCheck(color) {
+    let possiblePieces = getAllPieces(color)
+    let king = null
+    
+    for (const piece of possiblePieces) {
+        if (piece.dataset.rank === "K") {
+            king = piece
+        }
+    }
+
+    let square = king.parentNode
+    let pos = getPos(square)
+
+    let enemyColor = color === "W" ? "B" : "W"
+    
+    return isPosAttacked(pos, enemyColor)
 }
 
 
@@ -120,7 +132,6 @@ function getValidPosFromDir(piece, pos, direction) {
         result.push([row, col])
     }
 
-    console.log(result)
     return result
 }
 

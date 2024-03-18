@@ -1,6 +1,6 @@
 import { initialLayout } from "./const.js"
 import { findSquare, getPos, deepIncludes } from "./utils.js"
-import { getPossibleMoves } from "./valid.js"
+import { getAllPieces, getPossibleMoves, isInCheck, isPosAttacked } from "./valid.js"
 
 
 let currentTurn = "W" // "W for white; B for black"
@@ -94,6 +94,8 @@ function getDraggedPiece(ev) {
 function isValidMove(piece, droppedSquare) {
     // Check if the piece being moved matches the current type
     if (piece.dataset.color !== currentTurn) { return false }
+
+    console.log(isInCheck(currentTurn))
 
     // Determines if the piece the player moved is part of its possible move set
     let pos = getPos(droppedSquare)
