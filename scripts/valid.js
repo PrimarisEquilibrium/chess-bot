@@ -1,4 +1,4 @@
-import { findSquare, getPos, inBounds } from "./utils.js"
+import { findSquare, getPos, inBounds, deepIncludes } from "./utils.js"
 
 
 /**
@@ -31,9 +31,15 @@ export function getPossibleMoves(piece) {
  */
 function getAllPieces(color) {
     let enemyPieces = []
+
+    // Iterate through all chess tiles
     for (let row = 0; row < 8; row++) {
         for (let col = 0; col < 8; col++) {
+
+            // Either the chess piece element or null
             let pieceOrNull = findSquare(row, col).firstChild
+
+            // If not null and matches the color passed
             if (pieceOrNull && pieceOrNull.dataset.color === color) {
                 enemyPieces.push(pieceOrNull)
             }
@@ -50,6 +56,18 @@ function getAllPieces(color) {
  * @returns 
  */
 function isPosAttacked(pos, color) {
+    let enemyPieces = getAllPieces(color)
+    let attackedPositions = []
+
+    // Push all enemy possible attack positions to attackedPositions
+    for (const piece of enemyPieces) {
+        attackedPositions.push(...getPossibleMoves(piece))
+    }
+
+    // If the passed position is in the attack array, return true
+    if (deepIncludes(attackedPositions, pos)) {
+        return true
+    }
     return false
 }
 

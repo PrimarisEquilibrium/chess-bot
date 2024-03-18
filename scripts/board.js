@@ -1,5 +1,5 @@
 import { initialLayout } from "./const.js"
-import { findSquare, getPos } from "./utils.js"
+import { findSquare, getPos, deepIncludes } from "./utils.js"
 import { getPossibleMoves } from "./valid.js"
 
 
@@ -92,26 +92,6 @@ function getDraggedPiece(ev) {
  * @returns {Boolean} 
  */
 function isValidMove(piece, droppedSquare) {
-    function deepIncludes(array, searchElement) {
-        for (const element of searchElement) {
-            if (array.length !== element.length) { 
-                return false 
-            }
-
-            let same = true
-            for (let i = 0; i < element.length; i++) {
-                if (!(array[i] === element[i])) {
-                    same = false
-                }
-            }
-            if (same) {
-                return true
-            }
-        }
-
-        return false
-    }
-
     // Check if the piece being moved matches the current type
     if (piece.dataset.color !== currentTurn) { return false }
 

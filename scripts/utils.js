@@ -39,3 +39,31 @@ export function getPos(square) {
 export function inBounds(x, y) {
     return x <= 7 && x >= 0 && y <= 7 && y >= 0
 }
+
+
+/**
+ * Built-in includes but with support for nested arrays
+ * NOTE: May re-implement for arrays with arbitrary depth
+ * @param {Array} array of X
+ * @param {X} searchElement 
+ * @returns {Boolean}
+ */
+export function deepIncludes(array, searchElement) {
+    for (const element of searchElement) {
+        if (array.length !== element.length) { 
+            return false 
+        }
+
+        let same = true
+        for (let i = 0; i < element.length; i++) {
+            if (!(array[i] === element[i])) {
+                same = false
+            }
+        }
+        if (same) {
+            return true
+        }
+    }
+
+    return false
+}
