@@ -25,6 +25,25 @@ export function getPossibleMoves(piece) {
 
 
 /**
+ * Returns all the DOM pieces of the given color
+ * @param {String} color "W" (White) or "B" (Black)
+ * @returns {Array} Nested array of DOM Nodes
+ */
+function getAllPieces(color) {
+    let enemyPieces = []
+    for (let row = 0; row < 8; row++) {
+        for (let col = 0; col < 8; col++) {
+            let pieceOrNull = findSquare(row, col).firstChild
+            if (pieceOrNull && pieceOrNull.dataset.color === color) {
+                enemyPieces.push(pieceOrNull)
+            }
+        }
+    }
+    return enemyPieces
+}
+
+
+/**
  * Returns true if the square is being attacked by any piece of the given color
  * @param {Array} pos [row, col]
  * @param {String} color "W" (White) or "B" (Black)
