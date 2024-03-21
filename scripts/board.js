@@ -1,6 +1,6 @@
 import { initialLayout } from "./const.js"
 import { findSquare, getPos, deepIncludes } from "./utils.js"
-import { getAllPieces, getPossibleMoves, isInCheck, isPosAttacked } from "./valid.js"
+import { getPossibleMoves, isInCheck } from "./valid.js"
 
 
 let currentTurn = "W" // "W for white; B for black"
@@ -95,7 +95,20 @@ function isValidMove(piece, droppedSquare) {
     // Check if the piece being moved matches the current type
     if (piece.dataset.color !== currentTurn) { return false }
 
-    console.log(isInCheck(currentTurn))
+    if(isInCheck(currentTurn)) {
+        // Create a temporary piece (cloned from the dragged piece) with no display
+        let tempPiece = piece.cloneNode()
+        tempPiece.style.display = "none"
+
+        // If dropping the original piece stops the check the move is valid
+        droppedSquare.appendChild(tempPiece)
+        let isChecked = isInCheck(currentTurn)
+        droppedSquare.removeChild(tempPiece)
+
+        if (isChecked) {
+            return false
+        }
+    }
 
     // Determines if the piece the player moved is part of its possible move set
     let pos = getPos(droppedSquare)

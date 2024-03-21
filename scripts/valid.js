@@ -58,6 +58,7 @@ export function getAllPieces(color) {
  */
 export function isPosAttacked(pos, color) {
     let enemyPieces = getAllPieces(color)
+
     let attackedPositions = []
 
     // Push all enemy possible attack positions to attackedPositions
@@ -134,6 +135,9 @@ function getValidPosFromDir(piece, pos, direction) {
 
     return result
 }
+
+
+/* PIECE SPECIFIC MOVE CHECKER FUNCTIONS */
 
 
 /**
