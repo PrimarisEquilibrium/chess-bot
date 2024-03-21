@@ -95,6 +95,7 @@ function isValidMove(piece, droppedSquare) {
     // Check if the piece being moved matches the current type
     if (piece.dataset.color !== currentTurn) { return false }
 
+    // Check logic
     if(isInCheck(currentTurn)) {
         // Create a temporary piece (cloned from the dragged piece) with no display
         let tempPiece = piece.cloneNode()
