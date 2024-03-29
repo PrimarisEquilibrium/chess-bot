@@ -96,27 +96,49 @@ export function isInCheck(color) {
 
 
 /**
- * Returns true if the piece blocks the check; otherwise false.
- * @param {Node} piece
- * @param {Node} droppedSquare
- * @param {String} currentTurn
- * @returns {Boolean}
+ * Returns a nested array with all moves (and the piece) that block check for the current turn.
+ * @param {String} currentTurn 
+ * @returns {Array}
  */
-export function moveBlocksCheck(piece, droppedSquare, currentTurn) {
-    // Create a temporary piece (cloned from the dragged piece) with no display
-    let tempPiece = piece.cloneNode()
-    tempPiece.style.display = "none"
+export function movesThatBlockCheck(currentTurn) {
+    /**
+     * Returns true if the piece blocks the check; otherwise false.
+     * @param {Node} piece
+     * @param {Node} droppedSquare
+     * @param {String} currentTurn
+     * @returns {Boolean}
+     */
+    function moveBlocksCheck(piece, droppedSquare, currentTurn) {
+        // Create a temporary piece (cloned from the dragged piece) with no display
+        let tempPiece = piece.cloneNode()
+        tempPiece.style.display = "none"
 
-    // If dropping the original piece stops the check the move is valid
-    droppedSquare.appendChild(tempPiece)
-    let isChecked = isInCheck(currentTurn)
-    droppedSquare.removeChild(tempPiece)
+        // If dropping the original piece stops the check the move is valid
+        droppedSquare.appendChild(tempPiece)
+        let isChecked = isInCheck(currentTurn)
+        droppedSquare.removeChild(tempPiece)
 
-    if (isChecked) {
-        return false
+        if (isChecked) {
+            return false
+        }
+
+        return true
     }
 
-    return true
+    let result = []
+    let pieces = getAllPieces(currentTurn)
+
+    for (const piece of pieces) {
+        let moves = getPossibleMoves(piece)
+        for (const move of moves) {
+            // If a move blocks check append it to the result array
+            if (moveBlocksCheck(piece, findSquare(...move), currentTurn)) {
+                result.push([piece, move])
+            }
+        }
+    }
+
+    return result
 }
 
 

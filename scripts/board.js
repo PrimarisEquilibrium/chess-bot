@@ -1,6 +1,6 @@
 import { initialLayout } from "./const.js"
-import { findSquare, getPos, deepIncludes } from "./utils.js"
-import { getPossibleMoves, isInCheck, moveBlocksCheck } from "./valid.js"
+import { findSquare, getPos, deepIncludes, arraysEqual } from "./utils.js"
+import { getPossibleMoves, isInCheck, movesThatBlockCheck } from "./valid.js"
 
 
 let currentTurn = "W" // "W for white; B for black"
@@ -97,15 +97,22 @@ function isValidMove(piece, droppedSquare) {
         return false 
     }
 
-    // If piece is in check or the move doesn't prevent check return false
-    if(isInCheck(currentTurn) && !moveBlocksCheck(piece, droppedSquare, currentTurn)) {
-        return false
-    }
-
     // Determines if the piece the player moved is part of its possible move set
     let pos = getPos(droppedSquare)
     if (!deepIncludes(pos, getPossibleMoves(piece))) { 
         return false 
+    }
+
+    // If piece is in check or the move doesn't prevent check return false
+    if(isInCheck(currentTurn)) {
+        let validMoves = movesThatBlockCheck(currentTurn)
+        for (const [validPiece, validPos] of validMoves) {
+            // If piece and position are found in moves that block check
+            // it is a valid move
+            if (validPiece !== piece || !arraysEqual(pos, validPos)) {
+                return false
+            }
+        }
     }
 
     // If it is the pawn's first move, then it can move one or two squares
