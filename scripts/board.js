@@ -1,6 +1,6 @@
 import { initialLayout } from "./const.js"
 import { findSquare, getPos, deepIncludes } from "./utils.js"
-import { getPossibleMoves, isInCheck } from "./valid.js"
+import { getPossibleMoves, isInCheck, moveBlocksCheck } from "./valid.js"
 
 
 let currentTurn = "W" // "W for white; B for black"
@@ -93,27 +93,20 @@ function getDraggedPiece(ev) {
  */
 function isValidMove(piece, droppedSquare) {
     // Check if the piece being moved matches the current type
-    if (piece.dataset.color !== currentTurn) { return false }
+    if (piece.dataset.color !== currentTurn) { 
+        return false 
+    }
 
-    // Check logic
-    if(isInCheck(currentTurn)) {
-        // Create a temporary piece (cloned from the dragged piece) with no display
-        let tempPiece = piece.cloneNode()
-        tempPiece.style.display = "none"
-
-        // If dropping the original piece stops the check the move is valid
-        droppedSquare.appendChild(tempPiece)
-        let isChecked = isInCheck(currentTurn)
-        droppedSquare.removeChild(tempPiece)
-
-        if (isChecked) {
-            return false
-        }
+    // If piece is in check or the move doesn't prevent check return false
+    if(isInCheck(currentTurn) && !moveBlocksCheck(piece, droppedSquare, currentTurn)) {
+        return false
     }
 
     // Determines if the piece the player moved is part of its possible move set
     let pos = getPos(droppedSquare)
-    if (!deepIncludes(pos, getPossibleMoves(piece))) { return false }
+    if (!deepIncludes(pos, getPossibleMoves(piece))) { 
+        return false 
+    }
 
     // If it is the pawn's first move, then it can move one or two squares
     let hasMoved = piece.dataset.notMoved === "true" ? true : false

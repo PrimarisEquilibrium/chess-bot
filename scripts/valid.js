@@ -96,6 +96,31 @@ export function isInCheck(color) {
 
 
 /**
+ * Returns true if the piece blocks the check; otherwise false.
+ * @param {Node} piece
+ * @param {Node} droppedSquare
+ * @param {String} currentTurn
+ * @returns {Boolean}
+ */
+export function moveBlocksCheck(piece, droppedSquare, currentTurn) {
+    // Create a temporary piece (cloned from the dragged piece) with no display
+    let tempPiece = piece.cloneNode()
+    tempPiece.style.display = "none"
+
+    // If dropping the original piece stops the check the move is valid
+    droppedSquare.appendChild(tempPiece)
+    let isChecked = isInCheck(currentTurn)
+    droppedSquare.removeChild(tempPiece)
+
+    if (isChecked) {
+        return false
+    }
+
+    return true
+}
+
+
+/**
  * For pieces that move an arbitrary amount in the given directions, returns
  * all coordinates in that continuous direction until the following conditions
  * are broken:
