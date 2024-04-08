@@ -1,7 +1,7 @@
 import { initialLayout } from "./const.js"
-import { findSquare, getPos, deepIncludes, arraysEqual } from "./utils.js"
-import { getPossibleMoves } from "./valid.js"
-import { isInCheck, movesThatBlockCheck } from "./gameLogic.js"
+import { findSquare, getPos, deepIncludes, arraysEqual } from "./utils/utils.js"
+import { getPossibleMoves } from "./utils/valid.js"
+import { isInCheck, movesThatBlockCheck } from "./gameConditions.js"
 
 
 let currentTurn = "W" // "W for white; B for black"

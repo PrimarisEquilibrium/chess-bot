@@ -1,5 +1,5 @@
-import { getAllPieces, getPos, deepIncludes, findSquare } from "./utils.js"
-import { getPossibleMoves } from "./valid.js"
+import { getAllPieces, getPos, deepIncludes, findSquare } from "./utils/utils.js"
+import { getPossibleMoves } from "./utils/valid.js"
 
 /**
  * Returns true if the square is being attacked by any piece of the given color
