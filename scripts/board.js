@@ -1,6 +1,7 @@
 import { initialLayout } from "./const.js"
 import { findSquare, getPos, deepIncludes, arraysEqual } from "./utils.js"
-import { getPossibleMoves, isInCheck, movesThatBlockCheck } from "./valid.js"
+import { getPossibleMoves } from "./valid.js"
+import { isInCheck, movesThatBlockCheck } from "./gameLogic.js"
 
 
 let currentTurn = "W" // "W for white; B for black"
@@ -106,12 +107,18 @@ function isValidMove(piece, droppedSquare) {
     // If piece is in check or the move doesn't prevent check return false
     if(isInCheck(currentTurn)) {
         let validMoves = movesThatBlockCheck(currentTurn)
-        for (const [validPiece, validPos] of validMoves) {
-            // If piece and position are found in moves that block check
-            // it is a valid move
-            if (validPiece !== piece || !arraysEqual(pos, validPos)) {
-                return false
+
+        if (validMoves.length !== 0) {
+            for (const [validPiece, validPos] of validMoves) {
+                // If piece and position are found in moves that block check
+                // it is a valid move
+                if (validPiece !== piece || !arraysEqual(pos, validPos)) {
+                    return false
+                }
             }
+        } else {
+            console.log("CHECKMATE!")
+            return false
         }
     }
 

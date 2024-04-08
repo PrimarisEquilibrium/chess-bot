@@ -86,3 +86,29 @@ export function arraysEqual(a, b) {
 
     return true;
 }
+
+
+/**
+ * Returns all the DOM pieces of the given color
+ * @param {String} color "W" (White) or "B" (Black)
+ * @returns {Array} Nested array of DOM Nodes
+ */
+export function getAllPieces(color) {
+    let enemyPieces = []
+
+    // Iterate through all chess tiles
+    for (let row = 0; row < 8; row++) {
+        for (let col = 0; col < 8; col++) {
+
+            // Either the chess piece element or null
+            let pieceOrNull = findSquare(row, col).firstChild
+
+            // If not null and matches the color passed
+            if (pieceOrNull && pieceOrNull.dataset.color === color) {
+                enemyPieces.push(pieceOrNull)
+            }
+        }
+    }
+
+    return enemyPieces
+}
